@@ -2,9 +2,9 @@
 .NAME
 	CtxVdContinuousShutdown
 .SYNOPSIS  
-	Continuous cheching for old XenDesktop VM's and rebooting some of the oldes machines.
+	Continuous cheching for old XenDesktop VM's and shutting some of them down.
 .DESCRIPTION  
-	Continuous cheching for old (20 hours) XenDesktop VM's and rebooting some of the oldes machines.
+	Continuous cheching for old XenDesktop VM's and shutting some of them down.
 	Required: Powershell v3
 .NOTES  
 	File Name  : CtxVdContinuousShutdown.ps1
