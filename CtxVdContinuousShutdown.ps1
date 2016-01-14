@@ -2,9 +2,9 @@
 .NAME
 	CtxVdContinuousShutdown
 .SYNOPSIS  
-	Continuous cheching for old XenDesktop VM's and shutting some of them down.
+	Continuous checking for old XenDesktop VM's and shutting some of them down.
 .DESCRIPTION  
-	Continuous cheching for old XenDesktop VM's and shutting some of them down.
+	Continuous checking for old XenDesktop VM's and shutting some of them down.
 	Required: Powershell v3
 .NOTES  
 	File Name  : CtxVdContinuousShutdown.ps1
@@ -24,7 +24,7 @@
 .EXAMPLE
 	.\CtxVdContinuousShutdown.ps1 -EnableLogging
 	
-	Rebooting 15 (default) old VM's from every Delivery Group while logging to C:\Temp\logfile.txt
+	Shutting down 15 (default) old VM's from every Delivery Group while logging to C:\Temp\logfile.txt
 .PARAMETER MaxShutdowns
 	Specify the maximum of simultanious shutdowns when running this script.
 	Only enter a full integer number.
