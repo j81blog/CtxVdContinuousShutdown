@@ -63,7 +63,7 @@
 Param(
 	[Parameter(Mandatory=$false)][int32]$MaxShutdowns = 15,
 	[Parameter(Mandatory=$false)][string]$DesktopGroupName = "*",
-	[Parameter(Mandatory=$false)][switch]$EnableLoggingOnly = $false,
+	[Parameter(Mandatory=$false)][alias("WhatIf")][switch]$EnableLoggingOnly = $false,
 	[Parameter(Mandatory=$false)][switch]$EnableLogging = $false,
 	[Parameter(Mandatory=$false)][alias("LogDir")][string]$LogPath = ".",
 	[Parameter(Mandatory=$false)][string]$LogFile = "CtxVdContinuousShutdown.txt" 
@@ -91,16 +91,16 @@ if ($EnableLoggingOnly){
 	$EnableLogging = $true
 	$id = ($id + "-LogOnly ")
 }
-function ToLog ([string]$LogText) {
+function ToLog ([string]$Message) {
 	if ($EnableLogging){
 		$date = get-date -format 'yyyy-MM-dd HH:mm:ss'
-		Write-Output  "$date - $id | $LogText" | Out-File $PathFileLog -width 240 -Append
+		Write-Output  "$date - $id | $Message" | Out-File $PathFileLog -width 240 -Append
 	}
 }
 
 $machines = @()
-ToLog ("***************************************************************")
-ToLog ("Start Collecting old VM's")
+ToLog -Message "***************************************************************"
+ToLog -Message "Start Collecting old VM's"
 $Objects = Get-BrokerHostingPowerAction -Filter {ActionCompletionTime -lt "-20:00" -and ((Action -eq "TurnOn") -or (Action -eq "Restart") -or (Action -eq "Reset"))}  -MaxRecordCount 5000
 ForEach ($Object in $Objects) {
 	$machine = @()
@@ -117,25 +117,23 @@ ForEach ($Object in $Objects) {
 	}
 }
 $machines = $machines  | Where{$_.DesktopGroupName -like $DesktopGroupName} | Sort-Object ActionCompletionTime 
-ToLog ("Done, found " + [string]$machines.length + " old machines. Only shutting " + [string]$MaxShutdowns + " down this round")
+ToLog -Message "Done, found $($machines.length.ToString()) old machines. Only shutting $($MaxShutdowns.ToString()) down this round")
 $machine = $null
 for ($i=0; $i -lt $machines.length; $i++) {
 	if ($i -eq $MaxShutdowns){
-		ToLog ("Max shutdowns reached.")
+		ToLog -Message "Max shutdowns reached."
 		break
 	}
 	$machine = Get-BrokerMachine -MachineName $machines[$i].MachineName
 	if (($machine.SessionCount -eq "0") -and ($machine.SessionsEstablished -eq "0") -and ($machine.SessionsPending -eq "0")) {
-		ToLog ($machines[$i].HostedMachineName + ", " + $machines[$i].ActionCompletionTime)
+		ToLog -Message "$($machines[$i].HostedMachineName), $($machines[$i].ActionCompletionTime)"
 		if (!($EnableLoggingOnly)) { 
 			Set-BrokerMachine -MachineName $machines[$i].MachineName -InMaintenanceMode $true
 			$machines[$i].LastAction = "MaintenanceMode"
-			ToLog ("Set Action: " + $machines[$i].LastAction)
-		}
-		if (!($EnableLoggingOnly)) { 
+			ToLog -Message "$($machines[$i].HostedMachineName), Set Action: $($machines[$i].LastAction)"
 			New-BrokerHostingPowerAction -MachineName $machines[$i].MachineName -Action "Shutdown" | Out-Null
 			$machines[$i].LastAction = "Shutdown"
-			ToLog ("Set Action: " + $machines[$i].LastAction)
+			ToLog -Message "$($machines[$i].HostedMachineName), Set Action: $($machines[$i].LastAction)"
 		}
 	}
 }
@@ -145,20 +143,20 @@ $final = 0
 if ($EnableLoggingOnly) {
 	$finalloop = 1
 } else {
-	ToLog ("Waiting 30s for machines to shutdown.")
 	$finalloop = 10
+	ToLog -Message "Waiting 30s for machines to shutdown."
 	Start-Sleep -s 30
 }
 
 While ($final -ne $finalloop) {
 	$final++
-	ToLog ([string]$machines.length + " machines to check, round " + [string]$final + "")
+	ToLog -Message "$($machines.length.ToString()) machines to check, round: $($final.ToString())"
 	for ($i=0; $i -lt $machines.length; $i++) {
 		if ((Get-BrokerMachine -MachineName $machines[$i].MachineName).PowerState -eq "Off") {
 			if (!($EnableLoggingOnly)) { 
 				Set-BrokerMachine -MachineName $machines[$i].MachineName -InMaintenanceMode $false
 				$machines[$i].LastAction = "Done"
-				ToLog ($machines[$i].HostedMachineName + ", out maintenance mode.")
+				ToLog -Message "$($machines[$i].HostedMachineName), out maintenance mode."
 			}
 		}
 	}
@@ -167,13 +165,13 @@ While ($final -ne $finalloop) {
 		break
 	} else {
 		if (!($EnableLoggingOnly)) {
-			ToLog ("Waiting 30s for machines to shutdown. " + [string]$machines.length + " to go")
+			ToLog -Message "Waiting 30s for machines to shutdown, $($machines.length.ToString()) to go"
 			Start-Sleep -s 30
 		}
 	}
 }
-ToLog ("Finished!")
-ToLog ("***************************************************************")
+ToLog -Message "Finished!"
+ToLog -Message "***************************************************************"
 
 $MaxLines = 5000
 if (Test-Path $PathFileLog) {
