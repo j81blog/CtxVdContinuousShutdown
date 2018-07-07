@@ -143,8 +143,8 @@ $final = 0
 if ($EnableLoggingOnly) {
 	$finalloop = 1
 } else {
-	$finalloop = 10
 	ToLog -Message "Waiting 30s for machines to shutdown."
+	$finalloop = 20
 	Start-Sleep -s 30
 }
 
