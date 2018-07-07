@@ -128,7 +128,7 @@ for ($i=0; $i -lt $machines.length; $i++) {
 	if (($machine.SessionCount -eq "0") -and ($machine.SessionsEstablished -eq "0") -and ($machine.SessionsPending -eq "0")) {
 		ToLog -Message "$($machines[$i].HostedMachineName), $($machines[$i].ActionCompletionTime)"
 		if (!($EnableLoggingOnly)) { 
-			Set-BrokerMachine -MachineName $machines[$i].MachineName -InMaintenanceMode $true
+			Set-BrokerMachine -MachineName $machines[$i].MachineName -InMaintenanceMode $true | Out-Null
 			$machines[$i].LastAction = "MaintenanceMode"
 			ToLog -Message "$($machines[$i].HostedMachineName), Set Action: $($machines[$i].LastAction)"
 			New-BrokerHostingPowerAction -MachineName $machines[$i].MachineName -Action "Shutdown" | Out-Null
