@@ -152,7 +152,8 @@ While ($final -ne $finalloop) {
 	$final++
 	ToLog -Message "$($machines.length.ToString()) machines to check, round: $($final.ToString())"
 	for ($i=0; $i -lt $machines.length; $i++) {
-		if ((Get-BrokerMachine -MachineName $machines[$i].MachineName).PowerState -eq "Off") {
+		$MachineToCheck = Get-BrokerMachine -MachineName $machines[$i].MachineName
+		if ($MachineToCheck.PowerState -ne "On") {
 			if (!($EnableLoggingOnly)) { 
 				Set-BrokerMachine -MachineName $machines[$i].MachineName -InMaintenanceMode $false
 				$machines[$i].LastAction = "Done"
