@@ -106,7 +106,7 @@ ForEach ($Object in $Objects) {
 	$machine = @()
 	$BrokerMachine = Get-BrokerMachine -MachineName $Object.MachineName
 	if (($BrokerMachine.SessionCount -eq 0) -and ($BrokerMachine.RegistrationState -eq "Registered") -and ($BrokerMachine.PowerState -eq "On")) {
-		$machine = = [PSCustomObject]@{
+		$machine = [PSCustomObject]@{
 			ActionCompletionTime = $Object.ActionCompletionTime
 			MachineName = $Object.MachineName
 			DesktopGroupName = $BrokerMachine.DesktopGroupName
