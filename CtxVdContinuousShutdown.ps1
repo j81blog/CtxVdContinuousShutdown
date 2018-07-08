@@ -71,12 +71,7 @@ Param(
 
 )
 
-$PowerShellVersion = (Get-Host | Select-Object Version).Version.Major
-if (!($PowerShellVersion -ge 7 )) {
-	Write-Host -ForegroundColor Yellow "Please use at least PowerShell version 3"
-	Write-Host -ForegroundColor Yellow "Current Version:" $PowerShellVersion
-	Break
-}
+#requires -version 3.0
 
 if (-not (Get-Module -Name Citrix.*)) {
 	Import-Module Citrix.*
