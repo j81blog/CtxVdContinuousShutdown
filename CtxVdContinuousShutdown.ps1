@@ -66,9 +66,9 @@ Param(
 	[Parameter(Mandatory=$false)][alias("WhatIf")][switch]$EnableLoggingOnly = $false,
 	[Parameter(Mandatory=$false)][switch]$EnableLogging = $false,
 	[Parameter(Mandatory=$false)][alias("LogDir")][string]$LogPath = ".",
-	[Parameter(Mandatory=$false)][string]$LogFile = "CtxVdContinuousShutdown.txt" 
+	[Parameter(Mandatory=$false)][string]$LogFile = "CtxVdContinuousShutdown.txt",
 	[Parameter(Mandatory=$false)][string]$JobFile = "$(Join-Path $($env:temp) 'jobdata.xml')" 
-	
+
 )
 
 $PowerShellVersion = (Get-Host | Select-Object Version).Version.Major
@@ -117,7 +117,7 @@ ForEach ($Object in $Objects) {
 	}
 }
 $machines = $machines  | Where{$_.DesktopGroupName -like $DesktopGroupName} | Sort-Object ActionCompletionTime 
-ToLog -Message "Done, found $($machines.length.ToString()) old machines. Only shutting $($MaxShutdowns.ToString()) down this round")
+ToLog -Message "Done, found $($machines.length.ToString()) old machines. Only shutting $($MaxShutdowns.ToString()) down this round"
 $machine = $null
 for ($i=0; $i -lt $machines.length; $i++) {
 	if ($i -eq $MaxShutdowns){
