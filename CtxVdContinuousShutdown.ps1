@@ -54,7 +54,7 @@
 	File Name  : CtxVdContinuousShutdown.ps1
 	Author     : John Billekens - john@j81.nl
 	Requires   : Citrix Delivery Controller 7.x
-	Version    : v1.1
+	Version    : v1.2
 .LINK
 	https://blog.j81.nl
 #>
