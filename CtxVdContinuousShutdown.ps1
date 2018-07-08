@@ -150,9 +150,9 @@ While ($final -ne $finalloop) {
 		$MachineToCheck = Get-BrokerMachine -MachineName $machines[$i].MachineName
 		if (($MachineToCheck.PowerState -ne "On") -and ($machines[$i].LastAction -ne "Done")) {
 			if (!($EnableLoggingOnly)) { 
-				Set-BrokerMachine -MachineName $machines[$i].MachineName -InMaintenanceMode $false
+				Set-BrokerMachine -MachineName $MachineToCheck.MachineName -InMaintenanceMode $false
 				$machines[$i].LastAction = "Done"
-				ToLog -Message "$($machines[$i].HostedMachineName), out maintenance mode."
+				ToLog -Message "$($MachineToCheck..HostedMachineName), out maintenance mode. (PowerState: $($MachineToCheck.PowerState))"
 			}
 		}
 	}
